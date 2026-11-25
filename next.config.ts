@@ -1,19 +1,14 @@
 import type { NextConfig } from "next";
 
 /**
- * Canonical origin, resolved once at build time and inlined, so pages that
- * re-render later on the server use the same address as the build:
- *  1. NEXT_PUBLIC_SITE_URL — explicit override.
- *  2. Netlify's URL — the site's primary address (the custom domain once set).
- *  3. Vercel's production URL.
- *  4. localhost, for local development.
+ * Canonical origin, inlined at build time so every render uses the same address.
+ * Production builds use the live domain; set NEXT_PUBLIC_SITE_URL to override
+ * (for example on a preview host). Development uses localhost.
  */
+const PRODUCTION_URL = "https://www.souravkashyap.in";
 const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.NETLIFY === "true" && process.env.URL ? process.env.URL : undefined) ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000")
+  (process.env.NODE_ENV === "production" ? PRODUCTION_URL : "http://localhost:3000")
 ).replace(/\/$/, "");
 
 const nextConfig: NextConfig = {

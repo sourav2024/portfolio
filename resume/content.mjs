@@ -2,9 +2,8 @@
 // Same rule as the website: only claims backed by commits, public repos,
 // npm releases or store listings. Run `npm run resume` after editing.
 
-// Replace with the custom domain once the new site is deployed.
-const portfolioUrl = process.env.RESUME_SITE_URL ?? "https://souravs-code-canvas.lovable.app/";
-const bare = (u) => u.replace(/^https?:\/\//, "").replace(/\/$/, "");
+const portfolioUrl = process.env.RESUME_SITE_URL ?? "https://www.souravkashyap.in";
+const bare = (u) => u.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 
 export const resume = {
   name: "Sourav Kashyap",

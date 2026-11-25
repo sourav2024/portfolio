@@ -1,5 +1,7 @@
 # sourav2024/portfolio
 
+**Live:** https://www.souravkashyap.in
+
 Personal site of Sourav Kashyap: full-stack software engineer (TypeScript, Node.js, React Native, production AI and developer tools).
 
 Next.js 16 (App Router, Cache Components) · TypeScript · Tailwind CSS v4 · Lucide icons. No other runtime dependencies, no analytics, no secrets.
@@ -48,14 +50,8 @@ Tokens and the type scale live in `src/app/globals.css`; components only use tho
 
 ## Deploy
 
-Hosted on **Vercel** (free Hobby plan) from this repo: every push to `main` builds and deploys. Import at vercel.com/new with the Next.js preset and default settings.
+Hosted on **Vercel** (free Hobby plan) at https://www.souravkashyap.in. Every push to `main` builds and deploys. `souravkashyap.in` redirects to the `www` address.
 
-The canonical URL, sitemap and Open Graph tags are resolved at build time in `next.config.ts` from the host's production address (Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, or Netlify's `URL`). Set `NEXT_PUBLIC_SITE_URL` only to override it.
+The canonical URL, sitemap and Open Graph tags use `PRODUCTION_URL` in `next.config.ts`. If the domain ever changes, update it there and in `resume/content.mjs`, then run `npm run resume`.
 
-## Connecting a custom domain later
-
-1. In Vercel: Project → Settings → Domains → add `yourdomain.com` and `www.yourdomain.com`.
-2. At the registrar, add the DNS records Vercel shows for each (an `A` record for the apex, a `CNAME` for `www`). HTTPS is issued automatically once they resolve.
-3. Redeploy, so canonical, sitemap and OG URLs pick up the domain.
-4. Rebuild the résumé with the new address: `RESUME_SITE_URL=https://yourdomain.com npm run resume`, commit and push.
-5. Submit `https://yourdomain.com/sitemap.xml` in Google Search Console.
+DNS is at Hostinger: an `A` record for `@` and a `CNAME` for `www`, both pointing at Vercel.
