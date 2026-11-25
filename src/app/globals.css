@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* Dark mode follows the data-theme attribute set before paint (see layout.tsx). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --ink: #16171a;
+  --muted: #55585f;
+  --faint: #7c7f86;
+  --line: #e2e0d9;
+  --line-strong: #cfccc3;
+  --accent: #1d5c4c;
+  --accent-soft: #e3ede8;
+  --code-bg: #f1efe9;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e0f11;
+    --surface: #15171a;
+    --ink: #ecebe6;
+    --muted: #a4a7ad;
+    --faint: #7d8086;
+    --line: #25272b;
+    --line-strong: #34373c;
+    --accent: #7cc4ac;
+    --accent-soft: #15241f;
+    --code-bg: #121417;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0e0f11;
+  --surface: #15171a;
+  --ink: #ecebe6;
+  --muted: #a4a7ad;
+  --faint: #7d8086;
+  --line: #25272b;
+  --line-strong: #34373c;
+  --accent: #7cc4ac;
+  --accent-soft: #15241f;
+  --code-bg: #121417;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-code: var(--code-bg);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-serif-display);
+  --font-mono: var(--font-jetbrains);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Subtle entrance for the hero only; content is never hidden waiting for scroll. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.rise { animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.rise-2 { animation-delay: 0.08s; }
+.rise-3 { animation-delay: 0.16s; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rise { animation: none; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
