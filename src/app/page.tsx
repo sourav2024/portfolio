@@ -1,10 +1,12 @@
+import Image from "next/image";
 import { Suspense } from "react";
 import { ArrowDown, ArrowUpRight, Download, Mail } from "lucide-react";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { NpmLive, ProjectArticle } from "@/components/project";
-import { Section, Tag } from "@/components/section";
+import { Section } from "@/components/section";
+import { ButtonLink, external, ExternalLink } from "@/components/ui";
 import {
   about,
   alsoShipped,
@@ -15,11 +17,22 @@ import {
   interests,
   profile,
   projects,
+  type Experience,
 } from "@/content/site";
 import { photoSrc, resumeHref } from "@/lib/site";
-import Image from "next/image";
 
-const external = { target: "_blank", rel: "noopener noreferrer" } as const;
+const projectGroups = [
+  {
+    kind: "tool",
+    title: "Developer tools",
+    note: "Open source, published on npm with tests, CI and versioned releases.",
+  },
+  {
+    kind: "app",
+    title: "Mobile apps",
+    note: "Designed, built and released solo. Live on Google Play.",
+  },
+] as const;
 
 export default function Home() {
   return (
@@ -28,104 +41,74 @@ export default function Home() {
       <main id="main">
         <Hero />
 
-        <Section id="about" index="01" label="About">
-          <div className="max-w-2xl space-y-5 text-[1.05rem] leading-relaxed text-muted">
-            {about.map((p) => (
-              <p key={p.slice(0, 24)}>{p}</p>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="experience" index="02" label="Experience" title="Production work">
-          <ol className="space-y-16">
+        <Section id="experience" index="01" label="Experience" title="Production engineering work">
+          <ol className="space-y-16 sm:space-y-20">
             {experience.map((job) => (
               <li key={job.company}>
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                  <h3 className="font-serif text-2xl tracking-tight">
-                    {job.company}
-                    <span className="ml-2 font-sans text-base text-muted">· {job.role}</span>
-                  </h3>
-                  <p className="shrink-0 font-mono text-xs text-faint">{job.period}</p>
-                </div>
-                <p className="mt-2 max-w-2xl text-muted">{job.context}</p>
-
-                <div className="mt-6 space-y-6">
-                  {job.groups.map((g) => (
-                    <div key={g.title}>
-                      {job.groups.length > 1 ? (
-                        <h4 className="font-mono text-[0.7rem] uppercase tracking-[0.14em] text-faint">{g.title}</h4>
-                      ) : null}
-                      <ul className="mt-2 space-y-2.5">
-                        {g.points.map((pt) => (
-                          <li
-                            key={pt}
-                            className="relative max-w-2xl pl-4 leading-relaxed text-muted before:absolute before:left-0 before:top-[0.72em] before:h-px before:w-2 before:bg-line-strong"
-                          >
-                            {pt}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-
-                {job.apps ? (
-                  <div className="mt-6">
-                    <h4 className="font-mono text-[0.7rem] uppercase tracking-[0.14em] text-faint">Apps shipped with the team</h4>
-                    <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {job.apps.map((app) => (
-                        <li key={app.name}>
-                          <a
-                            href={app.href}
-                            {...external}
-                            className="group flex h-full items-start justify-between gap-3 rounded-lg border border-line bg-surface px-3.5 py-3 transition-colors hover:border-line-strong"
-                          >
-                            <span>
-                              <span className="block text-sm font-medium">{app.name}</span>
-                              <span className="block text-xs text-faint">{app.note}</span>
-                            </span>
-                            <ArrowUpRight className="mt-0.5 size-3.5 shrink-0 text-faint group-hover:text-ink" aria-hidden />
-                            <span className="sr-only">(store listing, opens in a new tab)</span>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
-
-                <div className="mt-6 flex flex-wrap gap-1.5">
-                  {job.stack.map((s) => (
-                    <Tag key={s}>{s}</Tag>
-                  ))}
-                </div>
+                <Job job={job} />
               </li>
             ))}
           </ol>
         </Section>
 
-        <Section id="projects" index="03" label="Independent projects" title="Things I built on my own" wide>
-          <div className="space-y-16">
-            {projects.map((p, i) => (
-              <ProjectArticle key={p.slug} project={p} index={i} />
+        <Section
+          id="projects"
+          index="02"
+          label="Independent projects"
+          title="Things I designed, built and shipped on my own"
+          wide
+        >
+          <nav aria-label="Projects in this section" className="-mt-4 mb-12 sm:-mt-6 sm:mb-16">
+            <ul className="flex flex-wrap gap-2">
+              {projects.map((p) => (
+                <li key={p.slug}>
+                  <a
+                    href={`#${p.slug}`}
+                    className="inline-flex h-9 items-center rounded-full border border-line px-3.5 text-[0.875rem] text-fg2 transition-colors hover:border-line-strong hover:text-fg"
+                  >
+                    {p.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div className="space-y-20 sm:space-y-24">
+            {projectGroups.map((group) => (
+              <div key={group.kind}>
+                <div className="mb-8 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-4">
+                  <h3 className="text-[1.0625rem] font-medium text-fg">{group.title}</h3>
+                  <p className="t-small text-muted">{group.note}</p>
+                </div>
+                <div className="space-y-14 sm:space-y-16">
+                  {projects
+                    .filter((p) => p.kind === group.kind)
+                    .map((p) => (
+                      <ProjectArticle key={p.slug} project={p} />
+                    ))}
+                </div>
+              </div>
             ))}
           </div>
         </Section>
 
-        <Section id="open-source" index="04" label="Open source" title="Published packages and tools">
-          <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
+        <Section id="open-source" index="03" label="Open source" title="Published packages">
+          <ul className="border-t border-line">
             {ecosystem.map((pkg) => (
-              <li key={pkg.name}>
+              <li key={pkg.name} className="border-b border-line">
                 <a
                   href={pkg.href}
                   {...external}
-                  className="group flex flex-col gap-1 px-4 py-3.5 transition-colors hover:bg-bg sm:flex-row sm:items-center sm:justify-between"
+                  className="group flex flex-col gap-1 py-4 transition-colors sm:flex-row sm:items-center sm:justify-between sm:gap-6"
                 >
                   <span className="flex items-center gap-2">
-                    <span className="font-mono text-sm">{pkg.name}</span>
-                    <ArrowUpRight className="size-3.5 text-faint group-hover:text-ink" aria-hidden />
+                    <span className="font-mono text-[0.9375rem] text-fg transition-colors group-hover:text-accent">
+                      {pkg.name}
+                    </span>
+                    <ArrowUpRight className="size-3.5 text-muted transition-colors group-hover:text-accent" aria-hidden />
+                    <span className="sr-only">(npm, opens in a new tab)</span>
                   </span>
-                  <span className="flex flex-wrap items-center gap-x-3 text-xs text-faint">
-                    <span>{pkg.kind}</span>
+                  <span className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <span className="t-small text-fg2">{pkg.kind}</span>
                     <Suspense fallback={null}>
                       <NpmLive pkg={pkg.npm} />
                     </Suspense>
@@ -134,55 +117,57 @@ export default function Home() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-faint">Versions and dates are read from the npm registry and refreshed daily.</p>
+          <p className="t-small mt-3 text-muted">Versions and dates are read from the npm registry and refreshed daily.</p>
 
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          <div className="mt-12 grid gap-8 sm:grid-cols-2">
             {alsoShipped.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                {...external}
-                className="group rounded-xl border border-line p-5 transition-colors hover:border-line-strong"
-              >
-                <span className="flex items-center justify-between">
-                  <span className="font-medium">{item.name}</span>
-                  <span className="inline-flex items-center gap-1 text-xs text-faint group-hover:text-ink">
-                    {item.label}
-                    <ArrowUpRight className="size-3.5" aria-hidden />
-                  </span>
-                </span>
-                <span className="mt-2 block text-sm leading-relaxed text-muted">{item.note}</span>
-              </a>
-            ))}
-          </div>
-
-          <a
-            href={profile.links.github}
-            {...external}
-            className="mt-8 inline-flex items-center gap-2 text-sm text-muted underline decoration-line-strong underline-offset-4 hover:text-ink hover:decoration-ink"
-          >
-            <GitHubIcon className="size-4" /> Everything else is on GitHub
-          </a>
-        </Section>
-
-        <Section id="expertise" index="05" label="Expertise" title="What I work with, and where it shows">
-          <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
-            {expertise.map((e) => (
-              <div key={e.area} className="bg-bg p-5">
-                <h3 className="font-medium">{e.area}</h3>
-                <p className="mt-1 text-sm text-faint">{e.evidence}</p>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{e.items.join(" · ")}</p>
+              <div key={item.name}>
+                <h3 className="font-medium text-fg">{item.name}</h3>
+                <p className="t-small mt-1.5 text-fg2">{item.note}</p>
+                <ExternalLink href={item.href} className="t-small mt-3">
+                  {item.label}
+                </ExternalLink>
               </div>
             ))}
+            <div>
+              <h3 className="font-medium text-fg">Everything else</h3>
+              <p className="t-small mt-1.5 text-fg2">Source, issues, changelogs and release history for each package.</p>
+              <ExternalLink href={profile.links.github} className="t-small mt-3">
+                github.com/sourav2024
+              </ExternalLink>
+            </div>
           </div>
         </Section>
 
-        <Section id="interests" index="06" label="Interests" title="Where I'm going deeper">
-          <ul className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
+        <Section id="skills" index="04" label="Skills" title="What I work with, and where it shows">
+          <dl className="border-t border-line">
+            {expertise.map((e) => (
+              <div key={e.area} className="grid gap-x-8 gap-y-2 border-b border-line py-5 sm:grid-cols-[13rem_1fr]">
+                <dt className="font-medium text-fg">{e.area}</dt>
+                <dd>
+                  <p className="text-fg2">{e.items.join(" · ")}</p>
+                  <p className="t-small mt-1.5 text-muted">{e.evidence}</p>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Section>
+
+        <Section id="about" index="05" label="About" title="How I got here, and how I work">
+          <div className="max-w-[42rem] space-y-5 text-[1.0625rem] leading-[1.7] text-fg2">
+            {about.map((p) => (
+              <p key={p.slice(0, 24)}>{p}</p>
+            ))}
+          </div>
+
+          <h3 id="interests" className="t-label mt-16 text-muted">
+            Where I&apos;m going deeper
+          </h3>
+          <ul className="mt-6 grid gap-x-10 gap-y-7 sm:grid-cols-2">
             {interests.map((it) => (
-              <li key={it.title}>
-                <h3 className="font-medium">{it.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-muted">{it.note}</p>
+              <li key={it.title} className="border-t border-line pt-4">
+                <h4 className="font-medium text-fg">{it.title}</h4>
+                <p className="t-small mt-1 text-fg2">{it.note}</p>
               </li>
             ))}
           </ul>
@@ -197,148 +182,215 @@ export default function Home() {
 
 function Hero() {
   const facts = [
-    { k: "Currently", v: `${experience[0].role}, ${experience[0].company}` },
-    { k: "Shipping since", v: "January 2024" },
+    { k: "Currently", v: `${experience[0].role} at ${experience[0].company}` },
+    { k: "Experience", v: "Production software since January 2024" },
     { k: "Based in", v: `${profile.location} · ${profile.timezone}` },
-    { k: "Open to", v: "Remote · Relocation" },
+    { k: "Open to", v: "Remote roles worldwide · Relocation with visa sponsorship" },
   ];
 
   return (
-    <section aria-labelledby="hero-title" className="mx-auto max-w-5xl px-4 pb-16 pt-12 sm:px-6 sm:pb-24 sm:pt-24">
-      <div className="flex flex-col gap-8 lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-12">
-        {photoSrc ? (
-          <Image
-            src={photoSrc}
-            alt={`Portrait of ${profile.name}`}
-            width={512}
-            height={512}
-            priority
-            sizes="(min-width: 1024px) 240px, 80px"
-            className="rise size-20 shrink-0 rounded-full border border-line object-cover lg:size-60 lg:rounded-2xl"
-          />
-        ) : null}
-        <div className="min-w-0">
-          <p className="rise font-mono text-xs uppercase tracking-[0.16em] text-accent">{hero.eyebrow}</p>
-          <h1
-            id="hero-title"
-            className="rise rise-2 mt-5 max-w-3xl font-serif text-[2.6rem] leading-[1.05] tracking-tight sm:text-6xl"
-          >
+    <section aria-labelledby="hero-title" className="container-page pb-16 pt-12 sm:pb-24 sm:pt-20 lg:pt-24">
+      <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-12">
+        <div className="min-w-0 lg:col-span-8">
+          {/* Identity first: who this is, before what they say. */}
+          <div className="rise flex items-center gap-3.5">
+            {photoSrc ? (
+              <Image
+                src={photoSrc}
+                alt=""
+                width={96}
+                height={96}
+                priority
+                className="size-12 rounded-full border border-line-strong object-cover lg:hidden"
+              />
+            ) : null}
+            <p className="text-[0.9375rem] leading-snug">
+              <span className="block font-medium text-fg sm:inline">{profile.name}</span>
+              <span aria-hidden className="mx-2 hidden text-line-strong sm:inline">/</span>
+              <span className="block text-fg2 sm:inline">{hero.eyebrow}</span>
+            </p>
+          </div>
+
+          <h1 id="hero-title" className="t-display rise rise-2 mt-6 max-w-[21ch] lg:max-xl:text-[3.25rem]">
             {hero.title}
           </h1>
-          <p className="rise rise-3 mt-6 max-w-2xl text-lg leading-relaxed text-muted">{hero.lede}</p>
-        </div>
-      </div>
+          <p className="t-lede rise rise-3 mt-7 max-w-[38rem] text-fg2">{hero.lede}</p>
 
-      <div className="rise rise-3 mt-9 flex flex-wrap items-center gap-3">
-        <a
-          href="#projects"
-          className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-bg transition-opacity hover:opacity-85"
-        >
-          View projects <ArrowDown className="size-4" aria-hidden />
-        </a>
-        {resumeHref ? (
-          <a
-            href={resumeHref}
-            download
-            className="inline-flex items-center gap-2 rounded-full border border-line-strong px-5 py-2.5 text-sm font-medium transition-colors hover:border-ink"
-          >
-            Download résumé <Download className="size-4" aria-hidden />
-          </a>
-        ) : null}
-        <div className="flex items-center gap-1 sm:ml-2">
-          <IconLink href={profile.links.github} label="GitHub">
-            <GitHubIcon className="size-[1.15rem]" />
-          </IconLink>
-          <IconLink href={profile.links.linkedin} label="LinkedIn">
-            <LinkedInIcon className="size-[1.15rem]" />
-          </IconLink>
-          <IconLink href={`mailto:${profile.email}`} label="Email" internal>
-            <Mail className="size-[1.15rem]" aria-hidden />
-          </IconLink>
-        </div>
-      </div>
-
-      <dl className="mt-14 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-        {facts.map((f) => (
-          <div key={f.k} className="bg-bg px-4 py-3.5">
-            <dt className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-faint">{f.k}</dt>
-            <dd className="mt-1 text-sm">{f.v}</dd>
+          <div className="rise rise-4 mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <ButtonLink href="#projects" variant="primary">
+              View projects <ArrowDown className="size-4" aria-hidden />
+            </ButtonLink>
+            {resumeHref ? (
+              <ButtonLink href={resumeHref} download>
+                Download résumé <Download className="size-4" aria-hidden />
+              </ButtonLink>
+            ) : null}
           </div>
-        ))}
-      </dl>
+
+          <ul className="rise rise-4 mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <li>
+              <SocialLink href={profile.links.github} icon={<GitHubIcon className="size-[1.125rem]" />}>
+                GitHub
+              </SocialLink>
+            </li>
+            <li>
+              <SocialLink href={profile.links.linkedin} icon={<LinkedInIcon className="size-[1.125rem]" />}>
+                LinkedIn
+              </SocialLink>
+            </li>
+            <li>
+              <SocialLink href={`mailto:${profile.email}`} icon={<Mail className="size-[1.125rem]" aria-hidden />} internal>
+                Email
+              </SocialLink>
+            </li>
+          </ul>
+        </div>
+
+        {/* Profile card: the facts a recruiter screens for, in one place. */}
+        <aside aria-label="At a glance" className="rise rise-3 lg:col-span-4">
+          <div className="overflow-hidden rounded-2xl border border-line bg-surface">
+            {photoSrc ? (
+              <Image
+                src={photoSrc}
+                alt={`Portrait of ${profile.name}`}
+                width={800}
+                height={800}
+                priority
+                sizes="(min-width: 1024px) 360px, 0px"
+                className="hidden aspect-[5/4] w-full object-cover object-[50%_22%] lg:block"
+              />
+            ) : null}
+            <dl className="-mb-px grid sm:grid-cols-2 lg:grid-cols-1">
+              {facts.map((f) => (
+                <div key={f.k} className="border-b border-line px-5 py-3.5 sm:odd:border-r lg:odd:border-r-0">
+                  <dt className="t-label text-muted">{f.k}</dt>
+                  <dd className="mt-1.5 text-[0.9375rem] leading-snug text-fg">{f.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </aside>
+      </div>
     </section>
   );
 }
 
-function IconLink({
+function SocialLink({
   href,
-  label,
+  icon,
   internal = false,
   children,
 }: {
   href: string;
-  label: string;
+  icon: React.ReactNode;
   internal?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <a
       href={href}
-      aria-label={label}
-      title={label}
       {...(internal ? {} : external)}
-      className="inline-flex size-10 items-center justify-center rounded-full text-muted transition-colors hover:bg-line/60 hover:text-ink"
+      className="inline-flex items-center gap-2 py-1 text-[0.9375rem] text-fg2 transition-colors hover:text-fg"
     >
+      {icon}
       {children}
+      {internal ? null : <span className="sr-only">(opens in a new tab)</span>}
     </a>
+  );
+}
+
+function Job({ job }: { job: Experience }) {
+  const grouped = job.groups.length > 1;
+  return (
+    <article aria-label={`${job.role} at ${job.company}`}>
+      <header className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+        <div>
+          <h3 className="t-h3">{job.company}</h3>
+          <p className="mt-1 font-medium text-fg">{job.role}</p>
+        </div>
+        <p className="t-meta shrink-0 text-muted">{job.period}</p>
+      </header>
+      <p className="mt-3 max-w-[42rem] text-fg2">{job.context}</p>
+
+      <div className="mt-8 border-t border-line">
+        {job.groups.map((g) => (
+          <div
+            key={g.title}
+            className={`border-b border-line py-6 ${grouped ? "grid gap-x-8 gap-y-3 md:grid-cols-[11rem_1fr]" : ""}`}
+          >
+            {grouped ? <h4 className="t-label pt-1 text-accent">{g.title}</h4> : <h4 className="sr-only">{g.title}</h4>}
+            <ul className="space-y-3">
+              {g.points.map((pt) => (
+                <li key={pt} className="li-rule max-w-[42rem] text-fg2">
+                  {pt}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {job.apps ? (
+        <div className="mt-6">
+          <h4 className="t-label text-muted">Apps shipped with the team</h4>
+          <ul className="mt-3 grid gap-x-8 sm:grid-cols-2">
+            {job.apps.map((app) => (
+              <li key={app.name} className="border-b border-line">
+                <a href={app.href} {...external} className="group flex items-center justify-between gap-3 py-3">
+                  <span>
+                    <span className="block font-medium text-fg transition-colors group-hover:text-accent">{app.name}</span>
+                    <span className="t-small block text-muted">{app.note}</span>
+                  </span>
+                  <ArrowUpRight className="size-4 shrink-0 text-muted transition-colors group-hover:text-accent" aria-hidden />
+                  <span className="sr-only">(store listing, opens in a new tab)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <p className="t-meta mt-6 max-w-[46rem] text-muted">
+        <span className="text-fg2">Stack</span>
+        <span aria-hidden className="mx-2">·</span>
+        {job.stack.join(", ")}
+      </p>
+    </article>
   );
 }
 
 function Contact() {
   return (
-    <section id="contact" aria-labelledby="contact-title" className="border-t border-line py-20 sm:py-28">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <p className="font-mono text-xs uppercase tracking-[0.14em] text-faint">
-          <span className="text-accent">07</span>
-          <span className="mx-2 text-line-strong">/</span>Contact
+    <section id="contact" aria-labelledby="contact-title" className="section-y border-t border-line bg-subtle">
+      <div className="container-page">
+        <p className="t-label text-muted">
+          <span className="text-accent">06</span>
+          <span aria-hidden className="mx-2.5 text-line-strong">—</span>
+          Contact
         </p>
-        <h2 id="contact-title" className="mt-6 max-w-3xl font-serif text-4xl leading-tight tracking-tight sm:text-5xl">
-          Hiring for a full-stack, backend, mobile or AI engineering role?
+        <h2 id="contact-title" className="t-display mt-6 max-w-[20ch]">
+          Hiring for a full-stack, backend, mobile or AI role?
         </h2>
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
-          I&apos;m based in {profile.location} ({profile.timezone}). {profile.availability} Email is the fastest way to
+        <p className="t-lede mt-6 max-w-[38rem] text-fg2">
+          I&apos;m based in {profile.location}, {profile.timezone}. {profile.availability} Email is the fastest way to
           reach me.
         </p>
-        <div className="mt-9 flex flex-wrap items-center gap-3">
-          <a
-            href={`mailto:${profile.email}`}
-            className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-bg transition-opacity hover:opacity-85"
-          >
-            <Mail className="size-4" aria-hidden /> {profile.email}
-          </a>
-          <a
-            href={profile.links.linkedin}
-            {...external}
-            className="inline-flex items-center gap-2 rounded-full border border-line-strong px-5 py-2.5 text-sm font-medium transition-colors hover:border-ink"
-          >
-            <LinkedInIcon className="size-4" /> LinkedIn
-          </a>
-          <a
-            href={profile.links.github}
-            {...external}
-            className="inline-flex items-center gap-2 rounded-full border border-line-strong px-5 py-2.5 text-sm font-medium transition-colors hover:border-ink"
-          >
-            <GitHubIcon className="size-4" /> GitHub
-          </a>
+        <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <ButtonLink href={`mailto:${profile.email}`} variant="primary" className="max-w-full">
+            <Mail className="size-4 shrink-0" aria-hidden />
+            <span className="truncate">{profile.email}</span>
+          </ButtonLink>
           {resumeHref ? (
-            <a
-              href={resumeHref}
-              download
-              className="inline-flex items-center gap-2 rounded-full border border-line-strong px-5 py-2.5 text-sm font-medium transition-colors hover:border-ink"
-            >
+            <ButtonLink href={resumeHref} download>
               <Download className="size-4" aria-hidden /> Résumé (PDF)
-            </a>
+            </ButtonLink>
           ) : null}
+          <ButtonLink href={profile.links.linkedin} {...external}>
+            <LinkedInIcon className="size-4" /> LinkedIn
+          </ButtonLink>
+          <ButtonLink href={profile.links.github} {...external}>
+            <GitHubIcon className="size-4" /> GitHub
+          </ButtonLink>
         </div>
       </div>
     </section>

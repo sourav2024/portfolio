@@ -1,47 +1,62 @@
 import type { ReactNode } from "react";
 
-/** Editorial section: a small index label on the left at desktop widths, content on the right. */
+/**
+ * Page section. On large screens a narrow rail carries the index and label and
+ * the content takes the remaining nine columns; below that the two stack.
+ * `wide` drops the rail so the content can use the full container.
+ */
 export function Section({
   id,
   index,
   label,
   title,
+  intro,
   wide = false,
   children,
 }: {
   id: string;
   index: string;
   label: string;
-  title?: string;
-  /** Wide sections put the label above and give content the full width. */
+  title: string;
+  intro?: string;
   wide?: boolean;
   children: ReactNode;
 }) {
+  const eyebrow = (
+    <p className="t-label text-muted">
+      <span className="text-accent">{index}</span>
+      <span aria-hidden className="mx-2.5 text-line-strong">—</span>
+      {label}
+    </p>
+  );
+  const heading = (
+    <div className="mb-10 max-w-2xl sm:mb-14">
+      <h2 id={`${id}-title`} className="t-h2">
+        {title}
+      </h2>
+      {intro ? <p className="t-lede mt-4 text-fg2">{intro}</p> : null}
+    </div>
+  );
+
   return (
-    <section id={id} aria-labelledby={`${id}-label`} className="border-t border-line py-16 sm:py-24">
-      <div className={`mx-auto grid max-w-5xl gap-8 px-4 sm:px-6 ${wide ? "" : "md:grid-cols-12 md:gap-10"}`}>
-        <div className={wide ? "" : "md:col-span-3"}>
-          <p className={`font-mono text-xs uppercase tracking-[0.14em] text-faint ${wide ? "" : "md:sticky md:top-24"}`}>
-            <span className="text-accent">{index}</span>
-            <span className="mx-2 text-line-strong">/</span>
-            <span id={`${id}-label`}>{label}</span>
-          </p>
-        </div>
-        <div className={wide ? "min-w-0" : "min-w-0 md:col-span-9"}>
-          {title ? (
-            <h2 className="mb-10 max-w-2xl font-serif text-3xl leading-tight tracking-tight sm:text-4xl">{title}</h2>
-          ) : null}
+    <section id={id} aria-labelledby={`${id}-title`} className="section-y border-t border-line">
+      {wide ? (
+        <div className="container-page">
+          <div className="mb-6">{eyebrow}</div>
+          {heading}
           {children}
         </div>
-      </div>
+      ) : (
+        <div className="container-page grid gap-6 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-3">
+            <div className="lg:sticky lg:top-28">{eyebrow}</div>
+          </div>
+          <div className="min-w-0 lg:col-span-9">
+            {heading}
+            {children}
+          </div>
+        </div>
+      )}
     </section>
-  );
-}
-
-export function Tag({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-md border border-line bg-surface px-2 py-0.5 font-mono text-[0.72rem] text-muted">
-      {children}
-    </span>
   );
 }

@@ -1,100 +1,183 @@
 @import "tailwindcss";
 
-/* Dark mode follows the data-theme attribute set before paint (see layout.tsx). */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-
+/* ─────────────────────────────────────────────────────────────────────────
+   Design tokens. Dark is the brand default; light is an opt-in via the
+   toggle (data-theme="light", set before paint in layout.tsx).
+   Every colour used by a component comes from this list.
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
-  --bg: #f7f6f2;
-  --surface: #ffffff;
-  --ink: #16171a;
-  --muted: #55585f;
-  --faint: #7c7f86;
-  --line: #e2e0d9;
-  --line-strong: #cfccc3;
-  --accent: #1d5c4c;
-  --accent-soft: #e3ede8;
-  --code-bg: #f1efe9;
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0e0f11;
-    --surface: #15171a;
-    --ink: #ecebe6;
-    --muted: #a4a7ad;
-    --faint: #7d8086;
-    --line: #25272b;
-    --line-strong: #34373c;
-    --accent: #7cc4ac;
-    --accent-soft: #15241f;
-    --code-bg: #121417;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #0e0f11;
-  --surface: #15171a;
-  --ink: #ecebe6;
-  --muted: #a4a7ad;
-  --faint: #7d8086;
-  --line: #25272b;
-  --line-strong: #34373c;
-  --accent: #7cc4ac;
-  --accent-soft: #15241f;
-  --code-bg: #121417;
+  --bg: #0c0d0f;            /* primary background */
+  --bg-subtle: #101215;     /* secondary background (bands, code) */
+  --surface: #15171b;       /* elevated surfaces (cards, menus) */
+  --fg: #edebe4;            /* primary text — warm off-white */
+  --fg-2: #b4b6ba;          /* secondary text */
+  --fg-muted: #8c8f95;      /* muted text, metadata (≥ 5.5:1 on --bg) */
+  --accent: #7fd1b3;        /* mint accent, status */
+  --accent-hover: #9be0c6;
+  --accent-soft: #14231e;   /* accent tint for pills */
+  --on-accent: #0c0d0f;     /* text on an accent fill */
+  --border: #202328;
+  --border-strong: #32353c;
   color-scheme: dark;
 }
 
+:root[data-theme="light"] {
+  --bg: #f8f7f3;
+  --bg-subtle: #f1efe9;
+  --surface: #ffffff;
+  --fg: #15161a;
+  --fg-2: #44474d;
+  --fg-muted: #62656c;      /* ≥ 5.4:1 on --bg */
+  --accent: #17604d;
+  --accent-hover: #0f4a3b;
+  --accent-soft: #e2ede8;
+  --on-accent: #f8f7f3;
+  --border: #e3e1d9;
+  --border-strong: #cbc8be;
+  color-scheme: light;
+}
+
+@custom-variant dark (&:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *));
+
 @theme inline {
   --color-bg: var(--bg);
+  --color-subtle: var(--bg-subtle);
   --color-surface: var(--surface);
-  --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-faint: var(--faint);
-  --color-line: var(--line);
-  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg2: var(--fg-2);
+  --color-muted: var(--fg-muted);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
-  --color-code: var(--code-bg);
-  --font-sans: var(--font-inter);
-  --font-serif: var(--font-serif-display);
-  --font-mono: var(--font-jetbrains);
+  --color-on-accent: var(--on-accent);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --container-page: 72rem;  /* 1152px content width */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Type scale. Three families: Newsreader (display), Geist (text),
+   Geist Mono (metadata). Nothing renders below 13px (0.8125rem).
+   ───────────────────────────────────────────────────────────────────────── */
+@utility t-display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.25rem);
+  line-height: 1.03;
+  letter-spacing: -0.024em;
+  text-wrap: pretty;
+}
+@utility t-h2 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 1.6rem + 1.6vw, 2.875rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+@utility t-h3 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 1.35rem + 0.6vw, 1.875rem);
+  line-height: 1.15;
+  letter-spacing: -0.014em;
+}
+@utility t-lede {
+  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  line-height: 1.6;
+}
+@utility t-body {
+  font-size: 1rem;
+  line-height: 1.65;
+}
+@utility t-small {
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+/* Mono metadata in sentence case: dates, versions, stacks. */
+@utility t-meta {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+/* The only uppercase style; reserved for section eyebrows and small headings. */
+@utility t-label {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Page container and vertical rhythm. */
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-page);
+  padding-inline: 1.25rem;
+  @media (width >= 40rem) { padding-inline: 2rem; }
+}
+@utility section-y {
+  padding-block: clamp(4rem, 3rem + 5vw, 7.5rem);
+}
+
+/* List item with a short rule as its marker. */
+@utility li-rule {
+  position: relative;
+  padding-left: 1.125rem;
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.82em;
+    width: 0.5rem;
+    height: 1px;
+    background: var(--border-strong);
+  }
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.65;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv11";
 }
 
 ::selection {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-/* Subtle entrance for the hero only; content is never hidden waiting for scroll. */
+a, button, summary { -webkit-tap-highlight-color: transparent; }
+
+/* Motion: one quiet entrance for the hero; content is never hidden until scroll. */
 @keyframes rise {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
-.rise { animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-.rise-2 { animation-delay: 0.08s; }
-.rise-3 { animation-delay: 0.16s; }
+.rise { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.rise-2 { animation-delay: 0.07s; }
+.rise-3 { animation-delay: 0.14s; }
+.rise-4 { animation-delay: 0.21s; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

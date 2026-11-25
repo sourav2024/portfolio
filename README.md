@@ -37,6 +37,15 @@ The PDF is printed by headless Chrome (macOS default path; set `CHROME_PATH` els
 
 The hero portrait is `public/sourav-kashyap.jpg`. It renders only while that file exists.
 
+## Design system
+
+Tokens and the type scale live in `src/app/globals.css`; components only use those.
+
+- **Colour:** dark by default (`--bg #0c0d0f`, warm off-white text, one mint accent), with a light theme behind the toggle. Every text colour meets WCAG AA (≥ 5.4:1) in both themes.
+- **Type:** Newsreader (display), Geist (text), Geist Mono (metadata). Utilities: `t-display`, `t-h2`, `t-h3`, `t-lede`, `t-body`, `t-small`, `t-meta`, `t-label`. Nothing renders below 13px; `t-label` is the only uppercase style.
+- **Layout:** `container-page` (72rem) and `section-y` for rhythm; `Section` gives the rail + content grid.
+- **Components:** `ui.tsx` (ButtonLink, ExternalLink, Tag, StatusPill), `nav.tsx` (scroll-spy nav and mobile menu), `project.tsx`.
+
 ## Deploy (free tier, no domain needed)
 
 **Vercel (recommended):** import this repo at vercel.com/new. Use the framework preset Next.js with default settings. The production URL is detected automatically for canonical, sitemap and OG tags.

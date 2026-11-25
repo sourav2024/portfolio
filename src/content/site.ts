@@ -115,6 +115,8 @@ export const experience: Experience[] = [
 
 export type Project = {
   slug: string;
+  /** Groups the showcase: published developer tools vs. shipped mobile apps. */
+  kind: "tool" | "app";
   name: string;
   tagline: string;
   problem: string;
@@ -134,6 +136,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "expopulse",
+    kind: "tool",
     name: "ExpoPulse",
     tagline: "Static analysis and safe auto-fixes for Expo and React Native apps.",
     problem:
@@ -163,22 +166,28 @@ export const projects: Project[] = [
       text: `Health Score    73/100
 ERROR 3   WARN 26   INFO 17
 
-expo 60 · android 64 · deps 70 · assets 72
-code 83 · performance 96
+expo 60 · android 64 · deps 70
+assets 72 · code 83
+performance 96
 
 ANDROID (10)
- ERROR  targetSdkVersion is 33; Google Play requires
-        at least 34 to publish app updates.
+ ERROR  targetSdkVersion is 33;
+        Google Play requires at
+        least 34 to publish app
+        updates.
         android/app/build.gradle:10
- WARN   Cleartext HTTP traffic is enabled app-wide
-        via android:usesCleartextTraffic.
- WARN   Permission android.permission.CAMERA is
-        declared 2 times (first at line 3).
+ WARN   Cleartext HTTP traffic is
+        enabled app-wide via
+        usesCleartextTraffic.
+ WARN   Permission CAMERA is
+        declared 2 times (first
+        at line 3).
         ✚ auto-fixable`,
     },
   },
   {
     slug: "scale-guard",
+    kind: "tool",
     name: "ScaleGuard",
     tagline: "Evidence-first scalability audits for Node.js services on PostgreSQL or MySQL.",
     problem:
@@ -206,23 +215,30 @@ ANDROID (10)
       kind: "output",
       caption: "Real output from the repo's evaluation fixture (excerpt)",
       command: "npx scale-guard scan ./app",
-      text: `Leads: 2 high, 4 medium, 0 low, 5 context.
+      text: `Leads: 2 high, 4 medium, 0 low,
+5 context.
 
-Queue workers: 3; summed concurrency: 25,
-of which DB-using: 20.
+Queue workers: 3; summed
+concurrency: 25, of which
+DB-using: 20.
 
-## Interactive transactions with external I/O
-_Holds a connection across network calls._
-- src/routes/orders.ts:36 (high, external I/O:
-  fetch, timeout=30000)
-  const result = await prisma.$transaction(…)
+## Interactive transactions with
+   external I/O
+_Holds a connection across network
+calls._
+- src/routes/orders.ts:36
+  (high, external I/O: fetch,
+  timeout=30000)
+  await prisma.$transaction(…)
 
-## Database URLs in env files (values never shown)
-- .env.example DATABASE_URL: connection_limit=ABSENT`,
+## Database URLs in env files
+- .env.example DATABASE_URL:
+  connection_limit=ABSENT`,
     },
   },
   {
     slug: "technical-seo-mcp",
+    kind: "tool",
     name: "technical-seo-mcp",
     tagline: "An MCP server that gives AI assistants a working technical-SEO toolkit.",
     problem:
@@ -256,6 +272,7 @@ _Holds a connection across network calls._
   },
   {
     slug: "ai-vault",
+    kind: "app",
     name: "AI Vault",
     tagline: "A private document vault for Android that never touches the network.",
     problem:
@@ -288,6 +305,7 @@ _Holds a connection across network calls._
   },
   {
     slug: "dabba-dash",
+    kind: "app",
     name: "Dabba Dash",
     tagline: "A three-lane delivery-runner game for Android, rendered entirely in code.",
     problem:

@@ -1,18 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Source_Serif_4 } from "next/font/google";
+import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { experience, profile } from "@/content/site";
 import { photoSrc, siteUrl } from "@/lib/site";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const serif = Source_Serif_4({
+const sans = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
+const serif = Newsreader({
   subsets: ["latin"],
-  variable: "--font-serif-display",
+  variable: "--font-newsreader",
   display: "swap",
-  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+  axes: ["opsz"],
 });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
+const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 const description =
   "Full-stack software engineer building production logistics software across Node.js, React and React Native, LLM-powered features, and open-source developer tools. Based in India, open to remote and relocation roles.";
@@ -48,14 +48,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f6f2" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e0f11" },
-  ],
+  themeColor: "#0c0d0f",
 };
 
-// Runs before paint so the stored theme never flashes.
-const themeScript = `(()=>{try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){}})()`;
+// Dark is the default; a stored "light" choice is applied before paint so it never flashes.
+const themeScript = `(()=>{try{document.documentElement.dataset.theme=localStorage.getItem('theme')==='light'?'light':'dark'}catch(e){document.documentElement.dataset.theme='dark'}})()`;
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -77,7 +74,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${serif.variable} ${mono.variable} antialiased`}
+      data-theme="dark"
+      className={`${sans.variable} ${serif.variable} ${mono.variable} antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -86,10 +84,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
         />
       </head>
-      <body className="min-h-dvh bg-bg text-ink">
+      <body className="min-h-dvh bg-bg text-fg">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-bg"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-accent focus:px-3 focus:py-2 focus:text-on-accent"
         >
           Skip to content
         </a>
