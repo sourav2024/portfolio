@@ -24,10 +24,18 @@ npm run build && npm start
 | `src/app/` | Page, 404, `sitemap.xml`, `robots.txt`, generated Open Graph image, SVG favicon, JSON-LD `Person` in the layout. |
 | `public/projects/` | Genuine project images (store screenshots, a generated report). |
 
-### Adding the résumé and portrait
+### Résumé
 
-- Drop `Sourav_Kashyap_Resume_2027.pdf` into `public/`. The "Download résumé" buttons then appear on the next build.
-- Drop a square `sourav-kashyap.jpg` (about 512×512 or larger) into `public/`. The hero then shows the portrait.
+The résumé is generated from `resume/content.mjs`. Edit that file, then run:
+
+```bash
+npm run resume                                        # PDF + DOCX in resume/dist/, PDF copied to public/
+RESUME_SITE_URL=https://yourdomain.com npm run resume  # adds the portfolio link once deployed
+```
+
+The PDF is printed by headless Chrome (macOS default path; set `CHROME_PATH` elsewhere). Both formats are single-column with real text, so applicant-tracking systems can parse them. The "Download résumé" buttons render only while `public/Sourav_Kashyap_Resume_2027.pdf` exists.
+
+The hero portrait is `public/sourav-kashyap.jpg`. It renders only while that file exists.
 
 ## Deploy (free tier, no domain needed)
 

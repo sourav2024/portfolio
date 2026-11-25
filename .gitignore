@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated résumé outputs (public/ keeps the PDF the site serves)
+/resume/dist/
