@@ -48,14 +48,14 @@ Tokens and the type scale live in `src/app/globals.css`; components only use tho
 
 ## Deploy
 
-Hosted on **Netlify** (free plan) from this repo: every push to `main` builds and deploys. Next.js runs through Netlify's zero-config adapter, so no `netlify.toml` is needed.
+Hosted on **Vercel** (free Hobby plan) from this repo: every push to `main` builds and deploys. Import at vercel.com/new with the Next.js preset and default settings.
 
-The canonical URL, sitemap and Open Graph tags read Netlify's `URL` variable at build time, so they follow the site's main address. Set `NEXT_PUBLIC_SITE_URL` only to override it. Each production deploy uses 15 of the free plan's 300 monthly credits, so batch small changes into one push.
+The canonical URL, sitemap and Open Graph tags are resolved at build time in `next.config.ts` from the host's production address (Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, or Netlify's `URL`). Set `NEXT_PUBLIC_SITE_URL` only to override it.
 
 ## Connecting a custom domain later
 
-1. In Netlify: Domain management → Add a domain → enter `yourdomain.com`.
-2. At the registrar, either switch the nameservers to Netlify DNS (simplest; HTTPS is issued automatically) or add the `A`/`CNAME` records Netlify shows.
-3. Set the custom domain as the primary domain, then trigger a deploy so canonical, sitemap and OG URLs pick it up.
+1. In Vercel: Project → Settings → Domains → add `yourdomain.com` and `www.yourdomain.com`.
+2. At the registrar, add the DNS records Vercel shows for each (an `A` record for the apex, a `CNAME` for `www`). HTTPS is issued automatically once they resolve.
+3. Redeploy, so canonical, sitemap and OG URLs pick up the domain.
 4. Rebuild the résumé with the new address: `RESUME_SITE_URL=https://yourdomain.com npm run resume`, commit and push.
 5. Submit `https://yourdomain.com/sitemap.xml` in Google Search Console.
