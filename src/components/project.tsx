@@ -61,7 +61,7 @@ function Preview({ preview, name }: { preview: Project["preview"]; name: string 
       <div className="grid grid-cols-3 gap-3">
         {preview.images.map((img) => (
           <div key={img.src} className="overflow-hidden rounded-[1.1rem] border border-line bg-surface">
-            <Image src={img.src} width={1080} height={2400} alt={img.alt} sizes="(min-width: 1024px) 140px, 30vw" className="h-auto w-full" />
+            <Image src={img.src} width={img.width ?? 1080} height={img.height ?? 2400} alt={img.alt} sizes="(min-width: 1024px) 140px, 30vw" className="h-auto w-full" />
           </div>
         ))}
       </div>

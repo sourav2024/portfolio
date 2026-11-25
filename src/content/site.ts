@@ -128,7 +128,7 @@ export type Project = {
   preview:
     | { kind: "output"; caption: string; command: string; text: string }
     | { kind: "image"; caption: string; src: string; width: number; height: number; alt: string }
-    | { kind: "phones"; caption: string; images: { src: string; alt: string }[] };
+    | { kind: "phones"; caption: string; images: { src: string; alt: string; width?: number; height?: number }[] };
 };
 
 export const projects: Project[] = [
@@ -286,6 +286,38 @@ _Holds a connection across network calls._
       ],
     },
   },
+  {
+    slug: "dabba-dash",
+    name: "Dabba Dash",
+    tagline: "A three-lane delivery-runner game for Android, rendered entirely in code.",
+    problem:
+      "Endless runners feel unfair when the spawner can box you in, and they stutter on mid-range phones when every frame re-draws complex sprites. I wanted to build one that is fair by construction and smooth on ordinary Android hardware.",
+    built: [
+      "A complete game: lane-switching on swipe or tap, traffic and obstacles, deliveries with drop zones, power-ups, six scooters, four upgrades, daily missions and 13 achievements.",
+      "Every sprite is drawn in code with React Native Skia and every sound effect and music loop is synthesised by a script — no third-party art or audio.",
+      "Designed, built and released solo, from engine to Play Store listing.",
+    ],
+    decisions: [
+      "The simulation is a pure, deterministic engine — one fixed 1/120 s step and a seedable PRNG, with no React, Skia or Math.random inside — so runs are reproducible and testable.",
+      "A lane planner enforces a fairness rule: whatever spawns, a survivable route always exists.",
+      "Sprites are recorded once as Skia pictures and replayed each frame; a benchmark build logs FPS to logcat and an invincible mode lets a run soak unattended.",
+    ],
+    stack: ["React Native", "Expo SDK 58", "TypeScript", "React Native Skia", "Reanimated", "Zustand", "Jest"],
+    quality: "60 tests (engine, collision, spawner fairness, progression) · strict TypeScript · source private",
+    status: "Live on Google Play",
+    links: [
+      { label: "Google Play", href: "https://play.google.com/store/apps/details?id=com.souravkashyap.dabbadash" },
+    ],
+    preview: {
+      kind: "phones",
+      caption: "Store screenshots",
+      images: [
+        { src: "/projects/dabbadash-gameplay.png", alt: "Dabba Dash gameplay: a scooter weaving between a truck and an auto-rickshaw", width: 1080, height: 1920 },
+        { src: "/projects/dabbadash-garage.png", alt: "Dabba Dash garage screen with scooters and upgrades", width: 1080, height: 1920 },
+        { src: "/projects/dabbadash-missions.png", alt: "Dabba Dash daily missions and achievements", width: 1080, height: 1920 },
+      ],
+    },
+  },
 ];
 
 export const ecosystem = [
@@ -296,12 +328,6 @@ export const ecosystem = [
 ] as const;
 
 export const alsoShipped = [
-  {
-    name: "Dabba Dash",
-    note: "A three-lane delivery-runner game for Android. Sprites are drawn in code with React Native Skia and the audio is synthesised by script.",
-    href: "https://play.google.com/store/apps/details?id=com.souravkashyap.dabbadash",
-    label: "Google Play",
-  },
   {
     name: "Agent Skills on skills.sh",
     note: "ScaleGuard and ExpoPulse are installable as skills for Claude Code, Codex and other coding agents.",
@@ -324,7 +350,7 @@ export const expertise = [
   {
     area: "Mobile engineering",
     items: ["React Native", "Expo & EAS", "Kotlin modules", "Swift modules", "Crashlytics"],
-    evidence: "Background location in a driver app; on-device OCR in AI Vault.",
+    evidence: "Background location in a driver app; on-device OCR in AI Vault; a Skia game in Dabba Dash.",
   },
   {
     area: "Data",
