@@ -226,10 +226,10 @@ function Hero() {
             </p>
           </div>
 
-          <h1 id="hero-title" className="t-display rise rise-2 mt-6 max-w-[21ch] lg:max-xl:text-[3.25rem]">
+          <h1 id="hero-title" className="t-display mt-6 max-w-[21ch] lg:max-xl:text-[3.25rem]">
             {hero.title}
           </h1>
-          <p className="t-lede rise rise-3 mt-7 max-w-[38rem] text-fg2">{hero.lede}</p>
+          <p className="t-lede mt-7 max-w-[38rem] text-fg2">{hero.lede}</p>
 
           <div className="rise rise-4 mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <ButtonLink href="#projects" variant="primary">
