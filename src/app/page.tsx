@@ -205,7 +205,7 @@ function Hero() {
 
   return (
     <section aria-labelledby="hero-title" className="mx-auto max-w-5xl px-4 pb-16 pt-12 sm:px-6 sm:pb-24 sm:pt-24">
-      <div className="flex flex-col gap-8 lg:flex-row-reverse lg:items-end lg:justify-between lg:gap-12">
+      <div className="flex flex-col gap-8 lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-12">
         {photoSrc ? (
           <Image
             src={photoSrc}
