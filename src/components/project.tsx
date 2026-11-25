@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { Suspense } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import type { Project } from "@/content/site";
 import { getNpmMeta } from "@/lib/npm";
+import { ArchitectureDiagram } from "./architecture";
 import { external, StatusPill, Tag } from "./ui";
 
 /** Latest npm version and date; renders nothing if the registry can't be reached. */
@@ -79,9 +80,12 @@ function Preview({ preview }: { preview: Project["preview"] }) {
 }
 
 export function ProjectArticle({ project }: { project: Project }) {
+  const [primary, ...otherLinks] = project.links;
+  const deepDiveLabel = project.architecture ? "Architecture and engineering decisions" : "Engineering decisions";
+
   return (
     <article aria-labelledby={`${project.slug}-title`} id={project.slug} className="border-t border-line pt-10 sm:pt-12">
-      {/* Identity: name, status, one-line pitch, and the links a reviewer wants first. */}
+      {/* Summary: what it is, its status, and where to look at it. */}
       <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -98,12 +102,23 @@ export function ProjectArticle({ project }: { project: Project }) {
           <p className="t-lede mt-2 max-w-2xl text-fg2">{project.tagline}</p>
         </div>
         <ul className="flex shrink-0 flex-wrap gap-2">
-          {project.links.map((l) => (
+          <li>
+            <a
+              href={primary.href}
+              {...external}
+              className="group inline-flex h-10 items-center gap-1.5 rounded-full bg-fg px-4 text-[0.875rem] font-medium text-bg transition-opacity hover:opacity-85"
+            >
+              {primary.label}
+              <ArrowUpRight className="size-3.5" aria-hidden />
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+          </li>
+          {otherLinks.map((l) => (
             <li key={l.href}>
               <a
                 href={l.href}
                 {...external}
-                className="group inline-flex h-9 items-center gap-1.5 rounded-full border border-line-strong px-3.5 text-[0.875rem] font-medium transition-colors hover:border-muted hover:bg-surface"
+                className="group inline-flex h-10 items-center gap-1.5 rounded-full border border-line-strong px-4 text-[0.875rem] font-medium transition-colors hover:border-muted hover:bg-surface"
               >
                 {l.label}
                 <ArrowUpRight className="size-3.5 text-muted transition-colors group-hover:text-accent" aria-hidden />
@@ -114,7 +129,19 @@ export function ProjectArticle({ project }: { project: Project }) {
         </ul>
       </header>
 
-      {/* Problem and scope beside the evidence. */}
+      {/* Technologies and quality signals up front, where a scan lands first. */}
+      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+        <ul className="flex flex-wrap gap-1.5" aria-label="Technologies">
+          {project.stack.map((s) => (
+            <li key={s}>
+              <Tag>{s}</Tag>
+            </li>
+          ))}
+        </ul>
+        <p className="t-meta text-muted lg:shrink-0">{project.quality}</p>
+      </div>
+
+      {/* Problem and implementation beside the evidence. */}
       <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:gap-12">
         <div className="min-w-0 lg:col-span-7">
           <h5 className="t-label text-muted">Problem</h5>
@@ -134,29 +161,33 @@ export function ProjectArticle({ project }: { project: Project }) {
         </div>
       </div>
 
-      {/* Engineering decisions: the part that shows judgment, given its own row. */}
-      <div className="mt-10">
-        <h5 className="t-label text-muted">Engineering decisions</h5>
-        <ol className="mt-4 grid gap-x-8 gap-y-5 md:grid-cols-3">
-          {project.decisions.map((d, i) => (
-            <li key={d} className="border-t border-line-strong pt-4">
-              <span className="t-meta text-accent">{String(i + 1).padStart(2, "0")}</span>
-              <p className="t-small mt-2 text-fg2">{d}</p>
-            </li>
-          ))}
-        </ol>
-      </div>
-
-      <footer className="mt-8 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-        <ul className="flex flex-wrap gap-1.5" aria-label="Stack">
-          {project.stack.map((s) => (
-            <li key={s}>
-              <Tag>{s}</Tag>
-            </li>
-          ))}
-        </ul>
-        <p className="t-meta text-muted lg:shrink-0">{project.quality}</p>
-      </footer>
+      {/* Deep dive: collapsed by default so the page stays scannable; nothing is removed. */}
+      <details className="group mt-8 rounded-xl border border-line open:bg-subtle">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-xl px-5 py-3.5 transition-colors hover:bg-surface group-open:hover:bg-transparent [&::-webkit-details-marker]:hidden">
+          <span>
+            <span className="block font-medium text-fg">Technical deep dive</span>
+            <span className="t-small block text-muted">{deepDiveLabel}</span>
+          </span>
+          <ChevronDown
+            className="size-5 shrink-0 text-muted transition-transform duration-200 group-open:rotate-180"
+            aria-hidden
+          />
+        </summary>
+        <div className="space-y-10 border-t border-line px-5 pb-6 pt-6">
+          {project.architecture ? <ArchitectureDiagram data={project.architecture} /> : null}
+          <div>
+            <h5 className="t-label text-muted">Engineering decisions</h5>
+            <ol className="mt-4 grid gap-x-8 gap-y-5 md:grid-cols-3">
+              {project.decisions.map((d, i) => (
+                <li key={d} className="border-t border-line-strong pt-4">
+                  <span className="t-meta text-accent">{String(i + 1).padStart(2, "0")}</span>
+                  <p className="t-small mt-2 text-fg2">{d}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </details>
     </article>
   );
 }

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Suspense } from "react";
-import { ArrowDown, ArrowUpRight, Download, Mail } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Download, FileText, Mail } from "lucide-react";
 import { GitHubIcon, LinkedInIcon } from "@/components/brand-icons";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -11,6 +11,7 @@ import {
   about,
   alsoShipped,
   ecosystem,
+  education,
   experience,
   expertise,
   hero,
@@ -160,6 +161,16 @@ export default function Home() {
             ))}
           </div>
 
+          <dl className="mt-10 max-w-[42rem] border-t border-line pt-5">
+            <dt className="t-label text-muted">Education</dt>
+            <dd className="mt-2">
+              <span className="font-medium text-fg">{education.degree}</span>
+              <span className="t-small block text-fg2">
+                {education.school} · {education.period}
+              </span>
+            </dd>
+          </dl>
+
           <h3 id="interests" className="t-label mt-16 text-muted">
             Where I&apos;m going deeper
           </h3>
@@ -185,14 +196,18 @@ function Hero() {
     { k: "Currently", v: `${experience[0].role} at ${experience[0].company}` },
     { k: "Experience", v: "Production software since January 2024" },
     { k: "Based in", v: `${profile.location} · ${profile.timezone}` },
-    { k: "Open to", v: "Remote roles worldwide · Relocation with visa sponsorship" },
+    { k: "Open to", v: "Global remote roles · Relocation with employer sponsorship" },
   ];
 
   return (
-    <section aria-labelledby="hero-title" className="container-page pb-16 pt-12 sm:pb-24 sm:pt-20 lg:pt-24">
+    <section aria-labelledby="hero-title" className="container-page pb-16 pt-8 sm:pb-24 sm:pt-16 lg:pt-20">
       <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-12">
         <div className="min-w-0 lg:col-span-8">
           {/* Identity first: who this is, before what they say. */}
+          <p className="rise mb-6 flex items-start gap-2.5 text-[0.875rem] leading-snug text-fg2">
+            <span aria-hidden className="mt-[0.4em] size-1.5 shrink-0 rounded-full bg-accent" />
+            {profile.availabilityShort}
+          </p>
           <div className="rise flex items-center gap-3.5">
             {photoSrc ? (
               <Image
@@ -239,8 +254,8 @@ function Hero() {
               </SocialLink>
             </li>
             <li>
-              <SocialLink href={`mailto:${profile.email}`} icon={<Mail className="size-[1.125rem]" aria-hidden />} internal>
-                Email
+              <SocialLink href="#contact" icon={<Mail className="size-[1.125rem]" aria-hidden />} internal>
+                Contact
               </SocialLink>
             </li>
           </ul>
@@ -360,6 +375,41 @@ function Job({ job }: { job: Experience }) {
 }
 
 function Contact() {
+  const channels = [
+    {
+      label: "Email",
+      value: profile.email,
+      href: `mailto:${profile.email}`,
+      icon: <Mail className="size-[1.125rem]" aria-hidden />,
+      note: "Fastest way to reach me",
+    },
+    {
+      label: "LinkedIn",
+      value: "in/sourav-kashyap-56b550269",
+      href: profile.links.linkedin,
+      icon: <LinkedInIcon className="size-[1.125rem]" />,
+      newTab: true,
+    },
+    {
+      label: "GitHub",
+      value: "github.com/sourav2024",
+      href: profile.links.github,
+      icon: <GitHubIcon className="size-[1.125rem]" />,
+      newTab: true,
+    },
+    ...(resumeHref
+      ? [
+          {
+            label: "Résumé",
+            value: "PDF, two pages",
+            href: resumeHref,
+            icon: <FileText className="size-[1.125rem]" aria-hidden />,
+            download: true,
+          },
+        ]
+      : []),
+  ];
+
   return (
     <section id="contact" aria-labelledby="contact-title" className="section-y border-t border-line bg-subtle">
       <div className="container-page">
@@ -368,29 +418,46 @@ function Contact() {
           <span aria-hidden className="mx-2.5 text-line-strong">—</span>
           Contact
         </p>
-        <h2 id="contact-title" className="t-display mt-6 max-w-[20ch]">
-          Hiring for a full-stack, backend, mobile or AI role?
-        </h2>
-        <p className="t-lede mt-6 max-w-[38rem] text-fg2">
-          I&apos;m based in {profile.location}, {profile.timezone}. {profile.availability} Email is the fastest way to
-          reach me.
-        </p>
-        <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          <ButtonLink href={`mailto:${profile.email}`} variant="primary" className="max-w-full">
-            <Mail className="size-4 shrink-0" aria-hidden />
-            <span className="truncate">{profile.email}</span>
-          </ButtonLink>
-          {resumeHref ? (
-            <ButtonLink href={resumeHref} download>
-              <Download className="size-4" aria-hidden /> Résumé (PDF)
-            </ButtonLink>
-          ) : null}
-          <ButtonLink href={profile.links.linkedin} {...external}>
-            <LinkedInIcon className="size-4" /> LinkedIn
-          </ButtonLink>
-          <ButtonLink href={profile.links.github} {...external}>
-            <GitHubIcon className="size-4" /> GitHub
-          </ButtonLink>
+        <div className="mt-6 grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-7">
+            <h2 id="contact-title" className="t-display max-w-[16ch]">
+              Hiring for a full-stack, backend, mobile or AI role?
+            </h2>
+            <p className="t-lede mt-6 max-w-[34rem] text-fg2">
+              I&apos;m based in {profile.location}, {profile.timezone}. {profile.availability}
+            </p>
+            <div className="mt-8">
+              <ButtonLink href={`mailto:${profile.email}`} variant="primary" className="w-full sm:w-auto">
+                <Mail className="size-4 shrink-0" aria-hidden /> Email me
+              </ButtonLink>
+            </div>
+          </div>
+
+          <ul className="self-end border-t border-line-strong lg:col-span-5">
+            {channels.map((c) => (
+              <li key={c.label} className="border-b border-line-strong">
+                <a
+                  href={c.href}
+                  {...("newTab" in c && c.newTab ? external : {})}
+                  {...("download" in c && c.download ? { download: true } : {})}
+                  className="group flex items-center gap-4 py-4"
+                >
+                  <span className="text-fg2 transition-colors group-hover:text-accent">{c.icon}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="t-label block text-muted">{c.label}</span>
+                    <span className="mt-0.5 block truncate text-fg transition-colors group-hover:text-accent">{c.value}</span>
+                    {"note" in c && c.note ? <span className="t-small block text-muted">{c.note}</span> : null}
+                  </span>
+                  {"download" in c && c.download ? (
+                    <Download className="size-4 shrink-0 text-muted transition-colors group-hover:text-accent" aria-hidden />
+                  ) : (
+                    <ArrowUpRight className="size-4 shrink-0 text-muted transition-colors group-hover:text-accent" aria-hidden />
+                  )}
+                  {"newTab" in c && c.newTab ? <span className="sr-only">(opens in a new tab)</span> : null}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

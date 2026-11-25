@@ -12,7 +12,8 @@ export const profile = {
   headline: "Full-Stack Software Engineer — TypeScript, Node.js, React Native, production AI and developer tools",
   location: "Chandigarh, India",
   timezone: "IST (UTC+5:30)",
-  availability: "Open to remote roles worldwide and to relocation with visa sponsorship.",
+  availability: "Open to global remote opportunities and to relocation with employer-sponsored work authorization.",
+  availabilityShort: "Open to global remote opportunities and relocation",
   email: "souravkashyap7869@gmail.com",
   links: {
     github: "https://github.com/sourav2024",
@@ -113,6 +114,12 @@ export const experience: Experience[] = [
   },
 ];
 
+export type Architecture = {
+  title: string;
+  caption: string;
+  steps: { label: string; detail: string }[];
+};
+
 export type Project = {
   slug: string;
   /** Groups the showcase: published developer tools vs. shipped mobile apps. */
@@ -127,6 +134,8 @@ export type Project = {
   status: string;
   npm?: string;
   links: { label: string; href: string }[];
+  /** Optional pipeline diagram. Every step must exist in the real implementation. */
+  architecture?: Architecture;
   preview:
     | { kind: "output"; caption: string; command: string; text: string }
     | { kind: "image"; caption: string; src: string; width: number; height: number; alt: string }
@@ -137,6 +146,17 @@ export const projects: Project[] = [
   {
     slug: "expopulse",
     kind: "tool",
+    architecture: {
+      title: "Static-analysis pipeline",
+      caption: "One pass from project files to a scored report; fixes are a separate, explicit command.",
+      steps: [
+        { label: "Discover", detail: "Config via cosmiconfig, project files via fast-glob, with a results cache." },
+        { label: "Parse", detail: "Babel AST for code, sharp for image metadata, plus app config, Gradle, manifest and Info.plist." },
+        { label: "Run rules", detail: "59 rules across code, assets, dependencies, Expo config, Android and iOS." },
+        { label: "Score", detail: "Weighted per-category health scores; repeated findings are damped, absent layers are N/A." },
+        { label: "Report or fix", detail: "Terminal, JSON, Markdown, HTML or SARIF 2.1.0; fixes use a backup and an atomic write." },
+      ],
+    },
     name: "ExpoPulse",
     tagline: "Static analysis and safe auto-fixes for Expo and React Native apps.",
     problem:
@@ -188,6 +208,17 @@ ANDROID (10)
   {
     slug: "scale-guard",
     kind: "tool",
+    architecture: {
+      title: "Scan and reporting workflow",
+      caption: "Read-only from end to end: the scanner never executes project code or prints secrets.",
+      steps: [
+        { label: "Repository", detail: "A repo path, or only the files changed since a git ref in PR mode." },
+        { label: "Static scan", detail: "Pool config, PrismaClient instances, queue workers, transactions, loops, polling, process model." },
+        { label: "Ranked leads", detail: "Findings with file:line evidence, ranked by severity per deployable; credentials redacted." },
+        { label: "Connection budget", detail: "Prisma's pool formula and Little's law size the pool, optionally straight from scan output." },
+        { label: "Agent or CI", detail: "Markdown or JSON for a coding agent to verify, or an exit code that gates CI." },
+      ],
+    },
     name: "ScaleGuard",
     tagline: "Evidence-first scalability audits for Node.js services on PostgreSQL or MySQL.",
     problem:
@@ -239,7 +270,7 @@ calls._
   {
     slug: "technical-seo-mcp",
     kind: "tool",
-    name: "technical-seo-mcp",
+    name: "Technical SEO MCP",
     tagline: "An MCP server that gives AI assistants a working technical-SEO toolkit.",
     problem:
       "AI assistants can talk about SEO but cannot check a live site. This server gives them tools that actually fetch, crawl and measure — without API keys.",
@@ -273,6 +304,17 @@ calls._
   {
     slug: "ai-vault",
     kind: "app",
+    architecture: {
+      title: "Offline document-processing pipeline",
+      caption: "Every step runs on the phone. The release build has no INTERNET permission.",
+      steps: [
+        { label: "Capture", detail: "Camera scan, PDF import or photos from the library." },
+        { label: "Extract text", detail: "Embedded PDF text via PDFKit or pdfbox; scanned pages via Vision or ML Kit OCR." },
+        { label: "Classify", detail: "Keyword classifier picks the document type; heuristics pull dates, amounts and reference numbers." },
+        { label: "Store", detail: "Files on the filesystem, out of cloud backups; metadata and an FTS5 index in SQLite." },
+        { label: "Use", detail: "Full-text search, expiry reminders as local notifications, behind a biometric lock." },
+      ],
+    },
     name: "AI Vault",
     tagline: "A private document vault for Android that never touches the network.",
     problem:
@@ -386,6 +428,12 @@ export const expertise = [
     evidence: "LLM pipelines and voice agents at work; MCP servers and static analysers in public.",
   },
 ];
+
+export const education = {
+  degree: "B.Tech, Computer Science and Engineering",
+  school: "Guru Nanak Dev University Regional Campus, Gurdaspur",
+  period: "2020 — 2024",
+};
 
 export const interests = [
   { title: "Backend architecture", note: "Service boundaries, queues and idempotent workflows." },
