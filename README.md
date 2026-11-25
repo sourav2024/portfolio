@@ -46,15 +46,16 @@ Tokens and the type scale live in `src/app/globals.css`; components only use tho
 - **Layout:** `container-page` (72rem) and `section-y` for rhythm; `Section` gives the rail + content grid.
 - **Components:** `ui.tsx` (ButtonLink, ExternalLink, Tag, StatusPill), `nav.tsx` (scroll-spy nav and mobile menu), `project.tsx`.
 
-## Deploy (free tier, no domain needed)
+## Deploy
 
-**Vercel (recommended):** import this repo at vercel.com/new. Use the framework preset Next.js with default settings. The production URL is detected automatically for canonical, sitemap and OG tags.
+Hosted on **Netlify** (free plan) from this repo: every push to `main` builds and deploys. Next.js runs through Netlify's zero-config adapter, so no `netlify.toml` is needed.
 
-Other Node hosts work too: `npm run build && npm start`. Set `NEXT_PUBLIC_SITE_URL` to the public origin.
+The canonical URL, sitemap and Open Graph tags read Netlify's `URL` variable at build time, so they follow the site's main address. Set `NEXT_PUBLIC_SITE_URL` only to override it. Each production deploy uses 15 of the free plan's 300 monthly credits, so batch small changes into one push.
 
 ## Connecting a custom domain later
 
-1. In Vercel go to Project → Settings → Domains → add `yourdomain.com` (and `www`).
-2. At the registrar, add the DNS records Vercel shows. These are usually an `A` record to `76.76.21.21` for the apex and a `CNAME` for `www` to `cname.vercel-dns.com`.
-3. Set the env var `NEXT_PUBLIC_SITE_URL=https://yourdomain.com` and redeploy, so canonical, sitemap and OG URLs use the domain.
-4. Submit `https://yourdomain.com/sitemap.xml` in Google Search Console.
+1. In Netlify: Domain management → Add a domain → enter `yourdomain.com`.
+2. At the registrar, either switch the nameservers to Netlify DNS (simplest; HTTPS is issued automatically) or add the `A`/`CNAME` records Netlify shows.
+3. Set the custom domain as the primary domain, then trigger a deploy so canonical, sitemap and OG URLs pick it up.
+4. Rebuild the résumé with the new address: `RESUME_SITE_URL=https://yourdomain.com npm run resume`, commit and push.
+5. Submit `https://yourdomain.com/sitemap.xml` in Google Search Console.
